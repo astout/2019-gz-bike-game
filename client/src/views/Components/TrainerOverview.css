@@ -1,0 +1,102 @@
+.trainer-overview {
+  margin: 30px 15px;
+}
+
+.bicycle-icon {
+  width: 300px;
+  margin: 130px auto;
+}
+
+h1.countdown {
+  font-size: 180pt;
+  font-weight: 200;
+  color: #D3D930;
+  margin: 150px auto;
+}
+
+.session-time {
+  /* margin: 100px 25px 25px 25px;
+  padding-left: 27px; */
+  display: flex;
+  justify-content: center;
+  font-size: 70pt;
+  font-weight: 100;
+  color: #D5D5D5;
+}
+
+.session-time-wrapper {
+  min-width: 33vw;
+  margin: 100px auto 25px auto;
+}
+
+@media only screen and (min-width: 1025px) {
+  .session-time-wrapper {
+    min-width: 25vw;
+  }
+}
+
+/* @media only screen and (min-width: 1025px) {
+  .session-time {
+    margin: 100px 100px 25px 25px;
+    padding-left: 11%;
+    font-size: 70pt;
+    font-weight: 100;
+    color: #D5D5D5;
+  }
+} */
+
+/* session-minutes {} */
+
+.session-minutes-divider {
+  margin: 0 10px;
+}
+
+/* session-seconds {} */
+
+.session-milliseconds-divider {
+  margin: 0 10px;
+}
+
+/* session-milliseconds */
+
+.session-watts {
+  font-size: 60pt;
+  font-weight: 300;
+  color: #D3D930;
+  margin: 25px auto 10px auto;
+}
+
+.session-wh {
+  font-size: 70pt;
+  font-weight: 300;
+  color: #D3D930;
+  margin: 25px auto;
+}
+
+.wm-width {
+  width: 325px;
+}
+
+.watts-meter-container {
+  height: 475px;
+  width: 325px;
+  /* border: 2px solid white; */
+}
+
+.watts-bar {
+  background-color: #D3D930;
+  border-radius: 15px;
+  position: absolute;
+  height: 5px;
+  max-height: 475px;
+  transition: height 0.75s ease-in-out;
+  width: 270px;
+  margin-left: 25px;
+  bottom: 0;
+}
+
+.session-summary {
+  margin: 100px 0 100px 120px;
+  font-size: 40pt;
+  font-weight: 200;
+}

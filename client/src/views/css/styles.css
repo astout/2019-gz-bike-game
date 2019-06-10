@@ -1,0 +1,125 @@
+/* @import url("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i"); */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #000000;
+  /* font-family: 'Montserrat', sans-serif; */
+  font-size: 16px;
+  color: #FAFAFA;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #D3D930;
+}
+
+a:hover {
+  color: #98A632;
+}
+
+.block-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.home {
+  display: block;
+  width: 520px;
+  height: auto;
+  margin: 50px auto;
+  background: #454545;
+  border-radius: 5px;
+  padding: 15px 50px;
+}
+
+.btn-gzgreen {
+  background-color: #BDCF44;
+  color: white;
+}
+
+.btn-gzgreen:active {
+  background-color: #6C7338;
+  color: #D9D9D9;
+}
+
+.btn-big {
+  width: 650px;
+  height: 175px;
+  font-size: 75pt;
+  border-radius: 25px;
+}
+
+.btn-pretty-big {
+  width: 350px;
+  height: 100px;
+  font-size: 45pt;
+  border-radius: 18px;
+}
+
+.loading {
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center; }
+  .loading .loadingIcon {
+    -webkit-transform: rotate(20deg);
+        -ms-transform: rotate(20deg);
+            transform: rotate(20deg);
+    -webkit-animation: rotateLoading 1.5s ease-in-out infinite;
+            animation: rotateLoading 1.5s ease-in-out infinite; }
+@-webkit-keyframes rotateLoading {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+@keyframes rotateLoading {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+.error {
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column; }
+  .error p {
+    margin-top: 20px; }
+  .error button {
+    padding: 10px 22px;
+    border-radius: 2px;
+    margin-left: 4px;
+    border: none;
+    background: #a8a8a8;
+    color: #FFF;
+    -webkit-box-shadow: 1px 1px 4px #333;
+            box-shadow: 1px 1px 4px #333;
+    margin-top: 30px;
+    cursor: pointer; }
