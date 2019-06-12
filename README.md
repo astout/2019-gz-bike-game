@@ -13,10 +13,10 @@ This project is a Node.js / React App optimized to run on Raspbian Raspberry Pi 
 
 ## Devices Used
 
-* Apple TV
-* Raspberry Pi 3B+ running Raspbian
-* iPad Mini 4 running iOS 12.3.1
-* TP-Link Pocket
+* [Apple TV 3rd Generation](https://support.apple.com/kb/SP648?locale=bg_BG)
+* [Raspberry Pi 3B+ running Raspbian](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/)
+* [iPad Mini 4](https://en.wikipedia.org/wiki/IPad_Mini_4) running iOS 12.3.1
+* [TP-Link Pocket 3020](https://www.cnet.com/products/tp-link-tl-mr3020-portable-wireless-n-router/)
 
 <p align="center"><img src="https://user-images.githubusercontent.com/2783806/59373940-eeab4500-8d07-11e9-9aa4-0bdf98d936c6.jpg" 
  width="500" /></p>
