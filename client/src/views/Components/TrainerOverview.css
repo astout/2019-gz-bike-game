@@ -19,14 +19,14 @@ h1.countdown {
   padding-left: 27px; */
   display: flex;
   justify-content: center;
-  font-size: 70pt;
+  font-size: 67pt;
   font-weight: 100;
   color: #D5D5D5;
 }
 
 .session-time-wrapper {
   min-width: 33vw;
-  margin: 100px auto 25px auto;
+  margin: 25px auto 0 auto;
 }
 
 @media only screen and (min-width: 1025px) {
@@ -70,7 +70,7 @@ h1.countdown {
   font-size: 70pt;
   font-weight: 300;
   color: #D3D930;
-  margin: 25px auto;
+  margin: -10px auto 0 auto;
 }
 
 .wm-width {
@@ -96,7 +96,12 @@ h1.countdown {
 }
 
 .session-summary {
-  margin: 100px 0 100px 120px;
-  font-size: 40pt;
+  margin: 35px 0 5px 85px;
+  font-size: 32pt;
   font-weight: 200;
+}
+
+.session-efficiency-comparison img {
+  width: 200px;
+  margin-bottom: 15px;
 }
