@@ -16,7 +16,7 @@ BTState.isReady = function() {
 
 BTState.getTrainer = function() {
   return _.invoke(BTState, 'trainer.getData');
-}
+};
 
 function startScanning() {
   noble.startScanning();
@@ -35,9 +35,6 @@ function onScanStart() {
 function onScanStop() {
   console.log('Bluetooth - Scan Stopped');
   BTState.isScanning = false;
-  if (BTState.isReady() === false) {
-    startScanning();
-  }
 }
 
 function onStateChange(state) {
@@ -51,11 +48,15 @@ function connectPeripheral(peripheral = {}) {
   if (_.isEmpty(peripheral) || !_.isFunction(peripheral.connect)) {
     return false;
   }
+  if (BTState.isScanning) {
+    stopScanning();
+  }
   console.log(`exploring peripheral '${peripheral.id}'`);
   peripheral.connect((connectErr) => {
     if (connectErr) {
       console.error(`Could not connect to peripheral '${peripheral.id}'`);
       console.error(connectErr);
+      startScanning();
       return;
     }
     onPeripheralConnect(peripheral);
@@ -84,15 +85,15 @@ function onPeripheralDiscover(peripheral = {}) {
   }
 }
 
-function startReconnect(peripheral = {}) {
-  if (!_.isFunction(this, 'peripheral.connect')) {
-    return;
-  }
-  clearInterval(BTState.peripheralConnectTimer);
-  BTState.peripheralConnectTimer = setInterval(() => {
-    connectPeripheral(peripheral);
-  }, 7000);
-}
+// function startReconnect(peripheral = {}) {
+//   if (!_.isFunction(this, 'peripheral.connect')) {
+//     return;
+//   }
+//   clearInterval(BTState.peripheralConnectTimer);
+//   BTState.peripheralConnectTimer = setInterval(() => {
+//     connectPeripheral(peripheral);
+//   }, 7000);
+// }
 
 function onPeripheralDisconnect(peripheral = {}) {
   let id = _.get(peripheral, 'id', null);
@@ -103,7 +104,11 @@ function onPeripheralDisconnect(peripheral = {}) {
   console.log(`Peripheral '${id}' Disconnected`);
   if (_.get(BTState, 'trainer.peripheral.id') === id) {
     _.invoke(BTState, 'trainer.peripheralDisconnectEvent');
-    startReconnect(_.get(BTState, 'trainer.peripheral'));
+    if (!BTState.isScanning) {
+      _.invoke(BTState, 'trainer.onScanStart');
+      connectPeripheral(peripheral);
+      return;
+    }
   }
   if (!BTState.isReady()) {
     startScanning();
