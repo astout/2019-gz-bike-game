@@ -7,7 +7,8 @@ let BTState = {
   isScanning: false,
   websocket: null,
   trainer: null,
-  peripheralConnectTimer: null,
+  isConnecting: false,
+  reconnectTimer: null,
 };
 
 BTState.isReady = function() {
@@ -35,6 +36,7 @@ function onScanStart() {
 function onScanStop() {
   console.log('Bluetooth - Scan Stopped');
   BTState.isScanning = false;
+  startReconnectTimer();
 }
 
 function onStateChange(state) {
@@ -44,6 +46,19 @@ function onStateChange(state) {
   }
 }
 
+function startReconnectTimer() {
+  clearInterval(BTState.reconnectTimer);
+  BTState.reconnectTimer = setInterval(() => {
+    if (BTState.isReady() === false && BTState.isScanning === false) {
+      // _.values(noble._peripherals, (p) => _.invoke(p, 'disconnect'));
+      const p = _.get(BTState, 'trainer.peripheral');
+      if (connectPeripheral(p) === false) {
+        startScanning();
+      }
+    }
+  }, 10000);
+}
+
 function connectPeripheral(peripheral = {}) {
   if (_.isEmpty(peripheral) || !_.isFunction(peripheral.connect)) {
     return false;
@@ -51,16 +66,22 @@ function connectPeripheral(peripheral = {}) {
   if (BTState.isScanning) {
     stopScanning();
   }
+  startReconnectTimer(); // reset
+  if (_.get(peripheral, 'state') === 'connecting') {
+    console.log(`waiting for peripheral '${peripheral.id}'`);
+    return true;
+  }
+  // _.values(noble._peripherals, (p) => _.invoke(p, 'disconnect'));
   console.log(`exploring peripheral '${peripheral.id}'`);
   peripheral.connect((connectErr) => {
     if (connectErr) {
       console.error(`Could not connect to peripheral '${peripheral.id}'`);
       console.error(connectErr);
       startScanning();
-      return;
     }
     onPeripheralConnect(peripheral);
   });
+  return true;
 }
 
 const logWaitingMsg = _.debounce(() => {
@@ -75,43 +96,15 @@ function onPeripheralDiscover(peripheral = {}) {
     return false;
   }
   console.log(_.pick(peripheral, 'id', 'advertisement'));
-  let services = _.get(peripheral, 'advertisement.serviceUuids', []).map((id) => ({ id }));
+  const name = _.get(peripheral, 'advertisement.localName');
+  // let services = _.get(peripheral, 'advertisement.serviceUuids', []).map((id) => ({ id }));
   let { id } = peripheral;
-  if (matchPeripheral(peripheral) || _.some(services, matchService)) {
-    console.log(`found new matching peripheral: '${id}'`);
+  if (matchKickr(peripheral)) {
+    // if (matchPeripheral(peripheral) || _.some(services, matchService)) {
+    console.log(`found new matching peripheral: '${id}' '${name}'`);
     connectPeripheral(peripheral);
   } else {
     logWaitingMsg();
-  }
-}
-
-// function startReconnect(peripheral = {}) {
-//   if (!_.isFunction(this, 'peripheral.connect')) {
-//     return;
-//   }
-//   clearInterval(BTState.peripheralConnectTimer);
-//   BTState.peripheralConnectTimer = setInterval(() => {
-//     connectPeripheral(peripheral);
-//   }, 7000);
-// }
-
-function onPeripheralDisconnect(peripheral = {}) {
-  let id = _.get(peripheral, 'id', null);
-  if (id === null) {
-    console.error('unknown peripheral disconnect');
-    return;
-  }
-  console.log(`Peripheral '${id}' Disconnected`);
-  if (_.get(BTState, 'trainer.peripheral.id') === id) {
-    _.invoke(BTState, 'trainer.peripheralDisconnectEvent');
-    if (!BTState.isScanning) {
-      _.invoke(BTState, 'trainer.onScanStart');
-      connectPeripheral(peripheral);
-      return;
-    }
-  }
-  if (!BTState.isReady()) {
-    startScanning();
   }
 }
 
@@ -124,10 +117,14 @@ function onServicesDiscovery(services = [], peripheral = {}) {
     console.error(`No services advertised for Peripheral '${peripheral.id}'`);
     return;
   }
+  startReconnectTimer();
   services.forEach((s = {}) => {
     const service = _.defaults(s, { id: _.get(s, 'uuid', null) });
     if (_.isFunction(service.discoverCharacteristics)) {
       console.log(`Exploring Characteristics for Peripheral '${peripheral.id}', Service: '${service.id}' ${service.name ? service.name : ''}`);
+      if (!_.isEmpty(service.characteristics)) {
+        onCharacteristicsDiscovery(service.characteristics, service, peripheral);
+      }
       service.discoverCharacteristics([], (discoverCharacteristicsError, characteristics) => {
         if (discoverCharacteristicsError) {
           console.error(`Error discovering characteristics for Peripheral '${peripheral.id}', Service: '${service.id}'`);
@@ -153,6 +150,7 @@ function onCharacteristicsDiscovery(characteristics, service, peripheral) {
     console.error(`No characteristics advertised for Service '${service.id}' (${service.name ? service.name : ''}) on Peripheral '${peripheral.id}'`);
     return;
   }
+  startReconnectTimer();
   characteristics.forEach((c = {}) => {
     const characteristic = _.defaults(c, { id: _.get(c, 'uuid', null) });
     if (_.isEmpty(characteristic)) {
@@ -194,6 +192,7 @@ function onPeripheralConnect(peripheral = {}) {
     console.error('unknown peripheral connect event');
     return;
   }
+  startReconnectTimer(); // reset
   console.log(`Peripheral '${peripheral.id}' Connected`);
   peripheral.on('disconnect', () => {
     onPeripheralDisconnect(peripheral);
@@ -207,6 +206,31 @@ function onPeripheralConnect(peripheral = {}) {
     }
     return onServicesDiscovery(services, peripheral);
   });
+}
+
+function onPeripheralDisconnect(peripheral = {}) {
+  let id = _.get(peripheral, 'id', null);
+  if (id === null) {
+    console.error('unknown peripheral disconnect');
+    return;
+  }
+  console.log(`Peripheral '${id}' Disconnected`);
+  if (_.get(BTState, 'trainer.peripheral.id') === id) {
+    _.invoke(BTState, 'trainer.peripheralDisconnectEvent');
+  //   if (!BTState.isScanning) {
+  //     _.invoke(BTState, 'trainer.onScanStart');
+  //     connectPeripheral(peripheral);
+  //     return;
+  //   }
+  }
+  // if (!BTState.isReady()) {
+  //   startScanning();
+  // }
+}
+
+function matchKickr(peripheral) {
+  const name = _.get(peripheral, 'advertisement.localName', '');
+  return (name.includes(profile.KICKR_ID));
 }
 
 function matchPeripheral(peripheral) {
@@ -260,23 +284,24 @@ function onCpmNotify(data, peripheral, service, characteristic) {
   if (_.isEmpty(data)) {
     return;
   }
-  if (BTState.isReady() === false) {
-    clearInterval(BTState.peripheralConnectTimer);
-    _.invoke(BTState, 'trainer.setPeripheral', peripheral);
-  }
+  startReconnectTimer(); // reset
+  if (BTState.isReady()) {
+    if (BTState.isScanning) {
+      stopScanning();
+    }
+    if (_.get(BTState, 'trainer.peripheral.id') === peripheral.id) {
+      _.invoke(BTState, 'trainer.onCycleWatts', data[2]);
 
-  if (BTState.isReady() && BTState.isScanning) {
-    stopScanning();
+    }
+  } else {
+    _.invoke(BTState, 'trainer.setPeripheral', peripheral);
   }
 
   // console.log(`Peripheral: '${peripheral.id}', Service: '${service.name || service.id}', Characteristic: '${characteristic.name || characteristic.id}'`);
   // console.log(data, data.length);
   // console.log(data.toString('hex'));
-  // console.log(data[2], data[3]);
+  console.log(data[2], data[3]);
   // console.log(data);
-  if (BTState.isReady() && _.get(BTState, 'trainer.peripheral.id') === peripheral.id) {
-    _.invoke(BTState, 'trainer.onCycleWatts', data[2]);
-  }
 }
 
 function onCpcpIndicate(data, peripheral, service, characteristic) {

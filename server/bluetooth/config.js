@@ -1,5 +1,8 @@
 const _ = require('lodash');
 
+const KICKR_ID = '044C'; // trainer 1
+// const KICKR_ID = '1AED'; // trainer 2
+
 const cp_characteristics = {
   CyclingPowerMeasurement: {
     id: '2a63',
@@ -11,16 +14,16 @@ const cp_characteristics = {
   },
 };
 
-const csc_characteristics = {
-  SpeedCadenceControlPoint: {
-    id: '2a5d',
-    name: 'Speed and Cadence Control Point',
-  },
-  SpeedCadenceMeasurement: {
-    id: '2a5b',
-    name: 'Speed and Cadence Measurement',
-  },
-};
+// const csc_characteristics = {
+//   SpeedCadenceControlPoint: {
+//     id: '2a5d',
+//     name: 'Speed and Cadence Control Point',
+//   },
+//   SpeedCadenceMeasurement: {
+//     id: '2a5b',
+//     name: 'Speed and Cadence Measurement',
+//   },
+// };
 
 const services = {
   CyclingPower: {
@@ -28,11 +31,11 @@ const services = {
     name: 'Cycling Power',
     cp_characteristics,
   },
-  CyclingSpeedAndCadence: {
-    id: '1816',
-    name: 'Cycling Speed and Cadence',
-    csc_characteristics,
-  },
+  // CyclingSpeedAndCadence: {
+  //   id: '1816',
+  //   name: 'Cycling Speed and Cadence',
+  //   csc_characteristics,
+  // },
 };
 
 const peripherals = {
@@ -46,5 +49,6 @@ const peripherals = {
 module.exports = {
   peripherals,
   services,
-  characteristics: _.defaults({}, cp_characteristics, csc_characteristics),
+  characteristics: _.defaults({}, cp_characteristics),
+  KICKR_ID,
 };

@@ -136,7 +136,7 @@ class Trainer {
   }
 
   peripheralDisconnectEvent() {
-    this.setConnection(Connection.disconnected);
+    this.setConnection(Connection.searching);
   }
 
   onScanStart() {
