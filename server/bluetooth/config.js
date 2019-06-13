@@ -1,5 +1,7 @@
 const _ = require('lodash');
 
+const IS_DEMO = true;
+
 const KICKR_ID = '044C'; // trainer 1
 // const KICKR_ID = '1AED'; // trainer 2
 
@@ -51,4 +53,5 @@ module.exports = {
   services,
   characteristics: _.defaults({}, cp_characteristics),
   KICKR_ID,
+  IS_DEMO,
 };

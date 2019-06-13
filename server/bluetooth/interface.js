@@ -3,6 +3,10 @@ const _ = require('lodash');
 const Trainer = require('./Trainer');
 const profile = require('./config');
 
+let BTDemo = {
+  timer: null,
+};
+
 let BTState = {
   isScanning: false,
   websocket: null,
@@ -12,7 +16,7 @@ let BTState = {
 };
 
 BTState.isReady = function() {
-  return _.defaultTo(_.invoke(BTState, 'trainer.isConnected'), false); 
+  return _.defaultTo(_.invoke(BTState, 'trainer.isConnected'), false);
 };
 
 BTState.getTrainer = function() {
@@ -291,7 +295,6 @@ function onCpmNotify(data, peripheral, service, characteristic) {
     }
     if (_.get(BTState, 'trainer.peripheral.id') === peripheral.id) {
       _.invoke(BTState, 'trainer.onCycleWatts', data[2]);
-
     }
   } else {
     _.invoke(BTState, 'trainer.setPeripheral', peripheral);
@@ -314,16 +317,29 @@ function onCpcpIndicate(data, peripheral, service, characteristic) {
   console.log(data.toString('hex'));
 }
 
+function initDemo() {
+  _.invoke(BTState, 'trainer.setPeripheral', { id: 'demo' });
+  BTDemo.timer = setInterval(() => {
+    const watts = _.random(0, 350);
+    _.invoke(BTState, 'trainer.onCycleWatts', watts);
+  }, 1000);
+}
+
 BTState.init = function(SocketIO) {
   if (_.isEmpty(SocketIO)) {
     throw new Error('Socket module required to initialize Bluetooth Interface');
   }
   BTState.websocket = SocketIO;
-  noble.on('stateChange', onStateChange);
-  noble.on('discover', onPeripheralDiscover);
-  noble.on('scanStart', onScanStart);
-  noble.on('scanStop', onScanStop);
   BTState.trainer = new Trainer({}, SocketIO);
+  if (profile.IS_DEMO) {
+    initDemo();
+  } else {
+    noble.on('stateChange', onStateChange);
+    noble.on('discover', onPeripheralDiscover);
+    noble.on('scanStart', onScanStart);
+    noble.on('scanStop', onScanStop);
+  }
+
   return BTState;
 };
 
