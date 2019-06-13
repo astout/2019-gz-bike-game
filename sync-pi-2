@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# rsync -azvh --exclude-from 'sync-exclude.txt' --delete . pi@192.168.8.109:~/Documents/2019-bike-game
+# rsync -azvh --exclude-from 'sync-exclude.txt' --delete . pi@192.168.86.117:~/Documents/2019-bike-game
+# rsync -azvh --exclude-from 'sync-exclude.txt' --delete . pi@192.168.0.105:~/2019-bike-game
+rsync -azvh --exclude-from 'sync-exclude.txt' --delete . pi@192.168.0.104:~/2019-bike-game

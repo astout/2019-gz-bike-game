@@ -35,11 +35,11 @@ export function efficiencyImgWattHours(wattHours) {
     return boulder200;
   } else if (wh >= 1.5) {
     return boulder100;
-  } else if (wh >= 1) {
+  } else if (wh >= 0.6) {
     return boulder50;
-  } else if (wh >= 0.35) {
-    return nomad14;
   } else if (wh >= 0.2) {
+    return nomad14;
+  } else if (wh >= 0.1) {
     return nomad7;
   } else {
     return lunarCharging;
@@ -56,11 +56,11 @@ export function efficiencyRatingWattHours(wattHours) {
     return 'Boulder 200';
   } else if (wh >= 1.5) {
     return 'Boulder 100';
-  } else if (wh >= 1) {
+  } else if (wh >= 0.6) {
     return 'Boulder 50';
-  } else if (wh >= 0.35) {
-    return 'Nomad 14';
   } else if (wh >= 0.2) {
+    return 'Nomad 14';
+  } else if (wh >= 0.1) {
     return 'Nomad 7';
   } else {
     return 'Lunar Charging';
